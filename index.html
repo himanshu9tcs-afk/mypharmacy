@@ -1077,7 +1077,7 @@
     }));
 
     try {
-      const res = await fetch("https://script.google.com/macros/s/AKfycbwtQ7otgpHh0YtaG9W7geycSIjQiLc_mCWaQEi92WHFP87iup4w_nhtUXpi4E3gVrqIvQ/exec", {
+      const res = await fetch(API_URL);
         method: "POST",
         body: JSON.stringify({ customer: { name, phone, email, notes }, items }),
         headers: { "Content-Type": "application/json" }
