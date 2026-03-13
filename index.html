@@ -1085,9 +1085,9 @@
 
   try {
 
-    const res = await fetch(API_URL, {
+    await fetch(API_URL, {
       method: "POST",
-      mode: "cors",
+      mode: "no-cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         customer: { name, phone, email, notes },
@@ -1095,14 +1095,7 @@
       })
     });
 
-    const data = await res.json();
-    console.log("Server response:", data);
-
-    if (!data.success) {
-      throw new Error(data.error);
-    }
-
-    showSuccess(data.orderId);
+    showSuccess("Order submitted");
 
     cart = {};
     updateCartUI();
@@ -1110,14 +1103,13 @@
 
   } catch (e) {
 
-    console.error(e);
     showToast("Order failed. Please try again.");
-
     placeBtn.disabled = false;
     placeBtn.textContent = "Confirm Order";
 
   }
 }
+
 
   function showSuccess(orderId) {
     document.getElementById("modalContent").innerHTML = `
