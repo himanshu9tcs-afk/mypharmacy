@@ -1062,38 +1062,62 @@
   }
 
   async function placeOrder() {
-    const name = document.getElementById("custName").value.trim();
-    const phone = document.getElementById("custPhone").value.trim();
-    const email = document.getElementById("custEmail").value.trim();
-    const notes = document.getElementById("custNotes").value.trim();
-    if (!name || !phone) { showToast("Name and phone are required"); return; }
 
-    const placeBtn = document.getElementById("placeBtn");
-    placeBtn.disabled = true;
-    placeBtn.textContent = "Placing Order...";
+  const name = document.getElementById("custName").value.trim();
+  const phone = document.getElementById("custPhone").value.trim();
+  const email = document.getElementById("custEmail").value.trim();
+  const notes = document.getElementById("custNotes").value.trim();
 
-    const items = Object.values(cart).map(i => ({
-      name: i.name, qty: i.qty, price: parseFloat(i.price), unit: i.unit || "unit"
-    }));
-
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({ customer: { name, phone, email, notes }, items }),
-        headers: { "Content-Type": "application/json" }
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error();
-      showSuccess(data.orderId);
-      cart = {};
-      updateCartUI();
-      renderProducts();
-    } catch (e) {
-      showToast("Order failed. Please try again.");
-      placeBtn.disabled = false;
-      placeBtn.textContent = "Confirm Order";
-    }
+  if (!name || !phone) {
+    showToast("Name and phone are required");
+    return;
   }
+
+  const placeBtn = document.getElementById("placeBtn");
+  placeBtn.disabled = true;
+  placeBtn.textContent = "Placing Order...";
+
+  const items = Object.values(cart).map(i => ({
+    name: i.name,
+    qty: Number(i.qty),
+    price: Number(i.price)
+  }));
+
+  try {
+
+    const res = await fetch(API_URL, {
+      method: "POST",
+      mode: "cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        customer: { name, phone, email, notes },
+        items
+      })
+    });
+
+    const data = await res.json();
+    console.log("Server response:", data);
+
+    if (!data.success) {
+      throw new Error(data.error);
+    }
+
+    showSuccess(data.orderId);
+
+    cart = {};
+    updateCartUI();
+    renderProducts();
+
+  } catch (e) {
+
+    console.error(e);
+    showToast("Order failed. Please try again.");
+
+    placeBtn.disabled = false;
+    placeBtn.textContent = "Confirm Order";
+
+  }
+}
 
   function showSuccess(orderId) {
     document.getElementById("modalContent").innerHTML = `
