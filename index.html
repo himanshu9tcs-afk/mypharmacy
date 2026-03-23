@@ -1068,11 +1068,11 @@
   const email = document.getElementById("custEmail").value.trim();
   const notes = document.getElementById("custNotes").value.trim();
 
-  if (!name || !phone) {
-    showToast("Name and phone are required");
+  if (!name || !phone || !notes || !email) {
+    showToast("please fill the mandatory fields");
     return;
   }
-
+//Name and phone are required
   const placeBtn = document.getElementById("placeBtn");
   placeBtn.disabled = true;
   placeBtn.textContent = "Placing Order...";
